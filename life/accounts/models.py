@@ -17,7 +17,7 @@ class Wallet(models.Model):
     #here class Meta is used to check that all wallet balances will be greater than 0, 
     #this is done using the Q object( which is used to wrap a function) (like WHERE in sql)
     class Meta:
-        contraints = [
+        constraints = [
             models.CheckConstraint(
                 condition=models.Q(balance__gte= 0), name="wallet_balance_gte0"
             )
