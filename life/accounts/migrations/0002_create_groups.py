@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         ('accounts', '0001_initial'),
     ]
 
-    operations = [  migrations.RunPython(create_groups)
+    operations = [  migrations.RunPython(create_groups, migrations.RunPython.noop)
     ]
-    #run the create_group function
+    #run the create_group function|| noop ensures that that nothing will occur if the operation is done in the reverse direction
     
