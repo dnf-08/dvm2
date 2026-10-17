@@ -20,7 +20,7 @@ class Wallet(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(balance__gte= 0), name="wallet_balance_gte0"
-            )
+            )       
         ]
 
 #wallet transaction is used to manage the transaction whether its credit or debit and the amount
