@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Event List</h1>
+{% for event in event_list %}
+  <h2>{{event.title }}</h2>
+  <p>{{event.description}}</p>
+  <p>{{ event.venue}} ({{ event.kind }}) by {{ event.organization.name }}</p>
+  <!--this table will show the details of all the sessions associated witht the said event-->
+  <table>
+    <tr><th>|Start   |</th><th>|   End   |</th><th>|   Price   |</th><th>|   Available (remaining/capacity)   |</th></tr>
+    {% for session in event.sessions.all %}
+    <tr>
+      <td>{{ session.start_time }}</td>
+      <td>{{ session.end_time}}</td>
+      <td>{{ session.price }}</td>
+      <td>{{ session.remaining }} / {{ session.capacity }}</td>
+    </tr>
+    <!--this empty refers to when a particular event has no sessions related to it-->
+    {% empty %}
+    <tr><td colspan="4">No sessions yet.</td></tr>
+    {% endfor %}
+  </table>
+<!--this empty is for when there are no events-->
+{% empty %}
+  <p>No events have been created yet</p>
+{% endfor %}
+{% endblock %}

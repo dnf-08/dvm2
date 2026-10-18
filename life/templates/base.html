@@ -6,10 +6,11 @@
     </head>
 </html>
 <body>
+    <p>DEBUG: [{{ user }}]</p>
     <nav>
         <a href= "{% url 'home'%}">Home</a>
         <!-- using django's in built is_autheticated which will return True if the user is a real one-->
-        {%if user.is_autheticated %}
+        {%if user.is_authenticated %}
         {{user.username}}
         <form method="post" action="{% url 'logout' %}" style="display:inline">
         {% csrf_token %}<button>Log out</button>

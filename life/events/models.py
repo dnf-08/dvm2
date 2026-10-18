@@ -8,7 +8,7 @@ class Event(models.Model):
     #import the organization model from accounts as a foreign key for the event model
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE, related_name = "events")
     title = models.CharField(max_length = 50)
-    description = models.TextField
+    description = models.TextField()
     kind = models.CharField(max_length = 10) #what kind of event is it? ticket or slot || maybe add set options later
     venue =models.CharField(max_length=50)
 
