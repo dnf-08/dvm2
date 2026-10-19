@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Wallet</h1>
+<p>Balance: {{ user.wallet.balance }}</p>
+<form action="{% url 'add_money' %}" method="get">
+  <button type="submit">Add money</button>
+</form>
+<h2>Your Transactions</h2>
+<table>
+  <tr><th>Date</th><th>Type</th><th>Amount</th><th>Balance after</th></tr>
+  {% for inf in transactions %}
+  <tr>
+    <td>{{ inf.created_at}}</td>
+    <td>{{ inf.type }}</td>
+    <td>{{ inf.amount }}</td>
+    <td>{{inf.balance_after }}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="4">No transactions yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

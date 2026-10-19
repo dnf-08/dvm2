@@ -25,6 +25,8 @@ class Wallet(models.Model):
 
 #wallet transaction is used to manage the transaction whether its credit or debit and the amount
 class WalletTransaction(models.Model):
+    wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT, related_name="transactions")
     type = models.CharField(max_length= 10)#is it credit or debit || maybe add set options later
     amount =models.DecimalField(max_digits=10, decimal_places=2, default=0)
     balance_after = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)

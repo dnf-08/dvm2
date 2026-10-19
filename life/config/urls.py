@@ -27,5 +27,6 @@ urlpatterns = [
     path("accounts/login/", auth_views.LoginView.as_view(), name = "login"), #for class based views .as_view is used
     path("accounts/logout/",  auth_views.LogoutView.as_view(), name = "logout"),
     path("", event_views.EventListView.as_view(), name="home"), 
-
+    path("accounts/wallet", account_views.WalletView.as_view(), name= "wallet"),
+    path("accounts/wallet/add/", account_views.AddMoneyView.as_view(), name="add_money"),
 ]
