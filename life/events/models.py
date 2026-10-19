@@ -49,7 +49,7 @@ class Bookings(models.Model):
 
 #the tickets model gives one unit which gives admission to an event
 class Tickets(models.Model):
-    status_choices = [("ACTIVE", "Active"),("CONSUMED", "Consumed"),] #[done like this cause its stored as (value stored in db, value shown to user)]
+    status_choices = [("ACTIVE", "Active"),("CONSUMED", "Consumed"),] #done like this cause its stored as (value stored in db, value shown to user)
     booking = models.ForeignKey(Bookings, on_delete=models.CASCADE, related_name="tickets")#CASCADE is used to ensure that when a booking is delted it's corresponding tickets would also be deleted
     ticketcode = models.UUIDField(default =uuid.uuid4) #uuid will generate a random code for each ticket. uuid4 is completely random
     status = models.CharField(max_length=10, choices=status_choices, default="ACTIVE")
