@@ -1,8 +1,15 @@
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, View
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from .models import Event
+from .forms import BookingForm
+from .models import Event
+from .bookings import book_session
+from django.contrib import messages
 # Create your views here.
+
 
 class EventListView(LoginRequiredMixin, ListView):
     model = Event
@@ -15,3 +22,21 @@ class EventDetailView(LoginRequiredMixin, DetailView):
     template_name = "events/event_detail.html"
     #used to fetch only a single row via its primary key(pk)
 '''
+
+class BooksessionsView(LoginRequiredMixin, UserPassesTestMixin, View):
+    
+    def test_func(self):
+        return self.request.user.groups.filter(name="Customer").exists()
+    def post(self, request, pk):
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            try:
+                book_session(request.user, pk, form.cleaned_data["quantity"])
+            except ValueError as e:
+                messages.error(request, str(e))
+        
+        #this else handles when the form turns out invalid
+        else:
+            messages.error(request, "Enter a valid quantity.")
+    
+        return HttpResponseRedirect(reverse("home"))

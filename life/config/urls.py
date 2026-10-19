@@ -29,4 +29,5 @@ urlpatterns = [
     path("", event_views.EventListView.as_view(), name="home"), 
     path("accounts/wallet", account_views.WalletView.as_view(), name= "wallet"),
     path("accounts/wallet/add/", account_views.AddMoneyView.as_view(), name="add_money"),
+    path("sessions/<int:pk>/book/", event_views.BooksessionsView.as_view(), name="book_session"),
 ]
