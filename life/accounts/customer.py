@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.db import transaction #django databse's transaction tools
-from .models import Wallet, WalletTransaction
+from .models import Wallet, WalletTransaction,Organization
 
 #transaction.atomic is used so that if any line fails, everything done so far will get rollbacked
 @transaction.atomic
@@ -23,3 +24,11 @@ def creditwallet(user, amount):
                                             type ="credit",
                                               amount = amount,
                                                 balance_after = wallet.balance,)
+
+
+@transaction.atomic
+def createorganisation(name, username ,password):
+    user = get_user_model().objects.create_user(username= username, password= password)
+    user.groups.add(Group.objects.get(name="Organization"))
+    return Organization.objects.create(user = user, name =name)
+

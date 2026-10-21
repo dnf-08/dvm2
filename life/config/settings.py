@@ -82,6 +82,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
+
 #changed it from sqlite to postgresql database
 DATABASES = {
     "default": {
