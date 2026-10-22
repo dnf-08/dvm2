@@ -39,5 +39,8 @@ urlpatterns = [
     path("tickets/", event_views.TicketListView.as_view(), name="tickets"),
 
     path("dashboard/", dashboard_views.DashboardView.as_view(), name="dashboard"),
+    path("dashboard/events/creation", dashboard_views.EventCreationView.as_view(), name = "event_creation"),
+    path("dashboard/events/<int:pk>/sessions/add", dashboard_views.SessionCreateView.as_view(), name= "session_creation"),
+        
     
 ]

@@ -20,7 +20,7 @@ class Session(models.Model):
     end_time = models.DateTimeField() 
     capacity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    seats_booked = models.IntegerField()
+    seats_booked = models.IntegerField(default= 0)
     #here class Meta is being used to ensure that seat booked will never be greater than capacity for the event.
     #this is done using the Q object(which is used to wrap a function) 
     #and F(which references the value of the column of the row being looked at)

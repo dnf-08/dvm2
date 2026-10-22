@@ -1,5 +1,26 @@
 {%extends "base.html" %}
 {% block content %}
 <h1>{{ user.organization.name}}'s dashboard</h1>
-
+<p><a href = "{% url 'event_creation'%}">Add Events</a></p>
+<hr>
+<h2>Your Events:</h2>
+{%for event in events %}
+ <p>{{ forloop.counter }}) <strong>{{event.title}}</strong> is taking place at the venue: <strong>{{event.venue}}</strong> and is of type <strong>{{ event.kind}}</strong>-     <a href="{% url 'session_creation' event.pk %}">Add session</a></p>
+ <table>
+    <tr><th>Start</th><th>End</th><th>Capacity</th><th>Price</th><th>Booked</th></tr>
+    {% for session in event.sessions.all %}
+    <tr>
+    <td>{{ session.start_time}}</td>
+    <td>{{ session.end_time }}</td>
+    <td>{{ session.capacity }}</td>
+    <td>{{session.price }}</td>
+    <td>{{ session.seats_booked}}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">no sessions yet.</td></tr>
+    {% endfor %}
+  </table>
+ {% empty%}
+ <p>No events yet</p>
+ {%endfor%}
 {% endblock %}
