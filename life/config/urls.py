@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from accounts import views as account_views
 from events import views as event_views
+from dashboard import views as dashboard_views
 from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views 
 
@@ -37,5 +38,6 @@ urlpatterns = [
     path("bookings/", event_views.BookingListView.as_view(), name="bookings"),
     path("tickets/", event_views.TicketListView.as_view(), name="tickets"),
 
+    path("dashboard/", dashboard_views.DashboardView.as_view(), name="dashboard"),
     
 ]

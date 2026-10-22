@@ -13,7 +13,10 @@
         {%if user.is_authenticated %}
          <a href="{% url 'wallet' %}">Wallet</a>
         <a href="{% url 'bookings' %}">Bookings</a>
-        <a href="{% url 'tickets' %}">Active tickets</a>
+        <a href="{% url 'tickets' %}">Active tickets</a> 
+        {% if user.organization %}
+        <a href="{% url 'dashboard' %}">Organiser dashboard</a>
+        {%endif %}   
         {{user.username}}
         <form method="post" action="{% url 'logout' %}" style="display:inline">
         {% csrf_token %}<button>Log out</button>

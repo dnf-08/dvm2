@@ -32,8 +32,6 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 
-
-
 #registration for WalletTransaction and Wallet
 admin.site.register(WalletTransaction)
 admin.site.register(Wallet)
