@@ -4,7 +4,7 @@
 
 
 <table>
-    <tr><th>Ticket code</th><th>Buyer name</th><th>Booked at</th><th>Event</th><th>Session start time</th><th>Status</th></tr>
+    <tr><th>Ticket code</th><th>Buyer name</th><th>Booked at</th><th>Event</th><th>Session start time</th><th>Status</th><th>Action</th></tr>
     {%for ticket in tickets%}
     <tr>
         <td>{{ticket.ticketcode}}</td>
@@ -13,9 +13,16 @@
         <td>{{ ticket.booking.session.event.title }}</td>
         <td>{{ ticket.booking.session.start_time}}</td>
         <td>{{ticket.status}}</td>
+        <td>{%if ticket.status == "ACTIVE"%}
+            <form method="post" action="{% url 'ticket_consume' ticket.pk %}">
+            {% csrf_token %}
+            <button>Mark consumed</button>
+            </form>
+            {%endif%}   
+        </td>
     </tr>
     {% empty%}
-    <tr><td colspan= "6">No tickets have been purchased yet</td></tr>
+    <tr><td colspan= "7">No tickets have been purchased yet</td></tr>
     {%endfor%}
 </table>
 {%endblock%}

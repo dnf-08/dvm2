@@ -42,5 +42,5 @@ urlpatterns = [
     path("dashboard/events/creation/", dashboard_views.EventCreationView.as_view(), name = "event_creation"),
     path("dashboard/events/<int:pk>/sessions/add/", dashboard_views.SessionCreateView.as_view(), name= "session_creation"),
     path("dashboard/tickets/", dashboard_views.OrgsTicketView.as_view(), name="org_tickets"),
-    
+    path("dashboard/tickets/<int:pk>/consume/", dashboard_views.TicketConsumeView.as_view(), name="ticket_consume"),
 ]

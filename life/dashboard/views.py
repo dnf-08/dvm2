@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import TemplateView, FormView, CreateView, ListView
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.views.generic import TemplateView, FormView, CreateView, ListView, View
 from .forms import EventCreationForm, SessionCreationForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from events.models import Event, Tickets
+from events.bookings import consume_ticket
 # Create your views here.
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -57,3 +60,13 @@ class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
              return  Tickets.objects.filter(booking__session__event__organization = self.request.user.organization).order_by("-booking__created_at")
              #ordering by negavtive booking date so that it comes in decending order
 
+class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.groups.filter(name="Organization").exists()
+
+    def post(self, request, pk):
+        try:
+            consume_ticket(request.user.organization, pk)
+        except ValueError as e:
+            messages.error(request, str(e))
+        return HttpResponseRedirect(reverse("org_tickets"))

@@ -45,6 +45,7 @@ def book_session (user, session_id, quantity):
     return booking
 
 
+
 @transaction.atomic
 def consume_ticket(organization, ticket_id):
     try:
