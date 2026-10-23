@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, FormView, CreateView, ListView
 from .forms import EventCreationForm, SessionCreationForm
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
-from events.models import Event
+from events.models import Event, Tickets
 # Create your views here.
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -46,3 +46,14 @@ class SessionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         form.instance.event = self.get_event()
         return super().form_valid(form)
+
+class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+        template_name = "dashboard/org_ticket_list.html"
+        context_object_name ="tickets"
+        def test_func(self):
+                return self.request.user.groups.filter(name="Organization").exists()
+        def get_queryset(self):
+             #the __ is used to follow a relationship
+             return  Tickets.objects.filter(booking__session__event__organization = self.request.user.organization).order_by("-booking__created_at")
+             #ordering by negavtive booking date so that it comes in decending order
+

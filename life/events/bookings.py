@@ -43,3 +43,17 @@ def book_session (user, session_id, quantity):
         Tickets.objects.create(booking=booking)
 
     return booking
+
+
+@transaction.atomic
+def consume_ticket(organization, ticket_id):
+    try:
+        ticket = Tickets.objects.select_for_update(of=("self",)).get(pk=ticket_id, booking__session__event__organization=organization)
+    except Tickets.DoesNotExist:
+        raise ValueError("That ticket does not exist.")
+
+    if ticket.status != "ACTIVE":
+        raise ValueError("This ticket has already been consumed")
+    ticket.status = "CONSUMED"
+    ticket.save()
+    return ticket

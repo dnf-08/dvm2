@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{%block content%}
+<h1>Tickets:</h1>
+
+
+<table>
+    <tr><th>Ticket code</th><th>Buyer name</th><th>Booked at</th><th>Event</th><th>Session start time</th><th>Status</th></tr>
+    {%for ticket in tickets%}
+    <tr>
+        <td>{{ticket.ticketcode}}</td>
+        <td>{{ticket.booking.user.username}}</td>
+        <td>{{ticket.booking.created_at}}</td>
+        <td>{{ ticket.booking.session.event.title }}</td>
+        <td>{{ ticket.booking.session.start_time}}</td>
+        <td>{{ticket.status}}</td>
+    </tr>
+    {% empty%}
+    <tr><td colspan= "6">No tickets have been purchased yet</td></tr>
+    {%endfor%}
+</table>
+{%endblock%}
