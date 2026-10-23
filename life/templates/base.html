@@ -11,11 +11,13 @@
         <a href= "{% url 'home'%}">Home</a>
         <!-- using django's in built is_autheticated which will return True if the user is a real one-->
         {%if user.is_authenticated %}
+
+        {% if user.organization %}
+        <a href="{% url 'dashboard' %}">Organiser dashboard</a>
+        {%else%}
          <a href="{% url 'wallet' %}">Wallet</a>
         <a href="{% url 'bookings' %}">Bookings</a>
         <a href="{% url 'tickets' %}">Active tickets</a> 
-        {% if user.organization %}
-        <a href="{% url 'dashboard' %}">Organiser dashboard</a>
         {%endif %}   
         {{user.username}}
         <form method="post" action="{% url 'logout' %}" style="display:inline">
