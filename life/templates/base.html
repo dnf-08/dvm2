@@ -5,8 +5,24 @@
         <title>life</title>
     </head>
 </html>
+<style>
+    table{
+        border: 1px solid #000000;
+        background-color: #ababab;
+    }
+    td {
+         border: 1px solid #090909;  
+    }
+    th {
+    background-color: #646464;  
+    border-bottom: 2px solid #cbd5e1;
+    text-align: center;
+  }
+  body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
 <body>
-    <p>debug: [{{ user }}]</p>
     <nav>
         <a href= "{% url 'home'%}">Home</a>
         <!-- using django's in built is_autheticated which will return True if the user is a real one-->
