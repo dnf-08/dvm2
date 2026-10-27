@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Analytics</h1>
+
+<table>
+  <tr><th>Metric</th><th>Value</th></tr>
+  <tr><td>Tickets purchased</td><td>{{ticketstotal}}</td></tr>
+  <tr><td>Tickets consumed</td><td>{{ticketsconsumed}}</td></tr>
+  <tr><td>Tickets not yet consumed</td><td>{{ticketsactive}}</td></tr>
+  <tr><td>Bookings</td><td>{{bookingstotal}}</td></tr>
+  <tr><td>Total revenue</td><td>{{revenue}}</td></tr>
+  <tr><td>Seats sold / capacity</td><td>{{ seatsbooked}} / {{seatscapacity}}</td></tr>
+</table>
+
+<h2>By event</h2>
+<table>
+  <tr><th>Event</th><th>Tickets sold</th><th>Revenue</th></tr>
+  {% for e in perevent %}
+  <tr>
+    <td>{{e.session__event__title}}</td>
+    <td>{{e.tickets}}</td>
+    <td>{{e.revenue}}</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="3">No sales yet</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

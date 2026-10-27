@@ -3,6 +3,7 @@
 <h1>{{ user.organization.name}}'s dashboard</h1>
 <p><a href = "{% url 'event_creation'%}">Add Events</a></p>
 <p><a href="{% url 'org_tickets' %}">View purchased tickets</a></p>
+<p><a href="{% url 'analytics' %}">View analytics</a></p>
 <hr>
 <h2>Your Events:</h2>
 {%for event in events %}

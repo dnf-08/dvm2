@@ -6,8 +6,9 @@ from django.views.generic import TemplateView, FormView, CreateView, ListView, V
 from .forms import EventCreationForm, SessionCreationForm
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
-from events.models import Event, Tickets
+from events.models import Event, Tickets, Bookings, Session
 from events.bookings import consume_ticket
+from django.db.models import Sum, Aggregate
 # Create your views here.
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -70,3 +71,26 @@ class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
         except ValueError as e:
             messages.error(request, str(e))
         return HttpResponseRedirect(reverse("org_tickets"))
+
+class AnalyticsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = "dashboard/analytics.html"
+    def test_func(self):
+         return self.request.user.groups.filter(name="Organization").exists()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organization = self.request.user.organization
+        tickets = Tickets.objects.filter(booking__session__event__organization = organization)
+        bookings = Bookings.objects.filter(session__event__organization = organization)
+        context["ticketstotal"]=tickets.count()
+        context["ticketsactive"] =tickets.filter(status="ACTIVE").count()
+        context["ticketsconsumed"] =tickets.filter(status="CONSUMED").count()
+        context["bookingstotal"] = bookings.count()
+        context["revenue"] = bookings.aggregate(total=Sum("totalprice"))["total"]
+        seats = Session.objects.aggregate(booked=Sum("seats_booked"), capacity=Sum("capacity"))
+        booked = seats["booked"] 
+        capacity = seats["capacity"]        
+        context["seatsbooked"] = booked
+        context["seatscapacity"] = capacity
+        context["perevent"] = (bookings.values("session__event__id", "session__event__title").annotate(tickets=Sum("quantity"), revenue=Sum("totalprice")))
+        return context
+
