@@ -1,0 +1,18 @@
+[project]
+name = "dvm2"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "asgiref==3.12.1",
+    "django==6.1.2",
+    "dotenv==0.9.9",
+    "gunicorn==26.2.0",
+    "psycopg==3.3.6",
+    "psycopg-binary==3.3.6",
+    "psycopg2-binary==2.9.13",
+    "python-decouple==3.8",
+    "python-dotenv==1.2.4",
+    "sqlparse==0.6.0",
+    "tzdata==2026.5",
+    "uv==0.13.6",
+]
