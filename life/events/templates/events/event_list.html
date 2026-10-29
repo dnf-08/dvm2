@@ -4,8 +4,9 @@
 <hr>
 {% for event in event_list %}
   <h2>{{event.title }}</h2>
-  <p>{{event.description}}</p>
-  <p>{{ event.venue}} ({{ event.kind }}) by {{ event.organization.name }}</p>
+  <p>Description: {{event.description}}</p>
+  <p>Venue: {{ event.venue}}</p>
+  <p>Is of type:({{ event.kind }}) by {{ event.organization.name }}</p>
   <!--this table will show the details of all the sessions associated witht the said event-->
   <table>
     <tr><th>Start</th><th>End</th><th>Price</th><th>Available (remaining/capacity)</th><th>Book</th></tr>
