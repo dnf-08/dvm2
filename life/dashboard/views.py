@@ -86,7 +86,7 @@ class AnalyticsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context["ticketsconsumed"] =tickets.filter(status="CONSUMED").count()
         context["bookingstotal"] = bookings.count()
         context["revenue"] = bookings.aggregate(total=Sum("totalprice"))["total"]
-        seats = Session.objects.aggregate(booked=Sum("seats_booked"), capacity=Sum("capacity"))
+        seats = Session.objects.filter(event__organization=organization).aggregate(booked=Sum("seats_booked"), capacity=Sum("capacity"))
         booked = seats["booked"] 
         capacity = seats["capacity"]        
         context["seatsbooked"] = booked

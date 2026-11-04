@@ -16,13 +16,6 @@ class EventListView(LoginRequiredMixin, ListView):
     template_name = "events/event_list.html"
     #used to fetch and render all rows 
 
-'''can implement template later to display the details of all events
-class EventDetailView(LoginRequiredMixin, DetailView):
-    model  = Event
-    template_name = "events/event_detail.html"
-    #used to fetch only a single row via its primary key(pk)
-'''
-
 class BooksessionsView(LoginRequiredMixin, UserPassesTestMixin, View):
     
     def test_func(self):
