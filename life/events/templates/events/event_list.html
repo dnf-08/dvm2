@@ -9,18 +9,26 @@
   <p>Is of type:({{ event.kind }}) by {{ event.organization.name }}</p>
   <!--this table will show the details of all the sessions associated witht the said event-->
   <table>
-    <tr><th>Start</th><th>End</th><th>Price</th><th>Available (remaining/capacity)</th><th>Book</th></tr>
+    <tr><th>Start</th><th>End</th>{% if event.kind == "SLOT" %}<th>Duration</th>{% endif %}<th>Price</th><th>Available (remaining/capacity)</th><th>Book</th></tr>
     {% for session in event.sessions.all %}
     <tr>
       <td>{{ session.start_time }}</td>
       <td>{{ session.end_time}}</td>
+      {% if event.kind == "SLOT" %}<td>{{ session.duration }}</td>{% endif %}
       <td>{{ session.price }}</td>
       <td>{{ session.remaining }} / {{ session.capacity }}</td>
       <td>
           <form method = "post" action = "{%url 'book_session' session.pk %}">
               {%csrf_token%}
+              <!--this format of button will make it so that the user can only book a quanitity of one if the the event is ticketed
+              and multiple if the event is of a slot kind-->
+              {% if event.kind == "TICKET" %}
+              <input type="hidden" name="quantity" value="1">
+              <button>Buy ticket</button>
+              {% else %}
               <input type = 'number' name= "quantity" value="1" min="1">
-              <button>Book session</button>
+              <button>Book slot</button>
+              {% endif %}
           </form>
       </td>
     </tr>

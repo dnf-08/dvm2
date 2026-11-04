@@ -9,7 +9,8 @@ class Event(models.Model):
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE, related_name = "events")
     title = models.CharField(max_length = 50)
     description = models.TextField()
-    kind = models.CharField(max_length = 10) #what kind of event is it? ticket or slot || maybe add set options later
+    kchoices = [("TICKET", "Ticket"), ("SLOT", "Slot")]
+    kind = models.CharField(max_length = 10, choices=kchoices)
     venue =models.CharField(max_length=50)
 
 
@@ -29,7 +30,8 @@ class Session(models.Model):
             models.CheckConstraint(condition = models.Q(seats_booked__lte= models.F("capacity")), 
             name = "seat_booked_lte")
             ]
-
+    def duration(self):
+         return self.end_time - self.start_time
     def remaining(self):
             return self.capacity - self.seats_booked
 

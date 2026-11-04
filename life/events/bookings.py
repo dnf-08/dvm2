@@ -12,6 +12,10 @@ def book_session (user, session_id, quantity):
     except:
         ValueError("this session doesn't exist")
 
+    #to differentiate between ticketed and slot events, its so that ticketed events can only be bought one at a time
+    if session.event.kind == "TICKET" and quantity != 1:
+        raise ValueError("ticket events can only be bought one ticket at a time")
+
     if session.remaining() < quantity:
         raise ValueError("not enough seats left in this session")
     
