@@ -15,3 +15,11 @@ class SessionCreationForm(forms.ModelForm):
             "start_time": forms.DateTimeInput(attrs={"type": "datetime-local"}), 
             "end_time": forms.DateTimeInput(attrs={"type": "datetime-local"}),
         }
+
+    def clean(self):
+        cdata = super().clean()
+        start_time = cdata.get("start_time")
+        end_time = cdata.get("end_time")
+        if start_time and end_time and end_time <= start_time:
+            raise forms.ValidationError("end time must be after start time")
+        return cdata
