@@ -24,11 +24,10 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - static_volume:/app/staticfiles:ro
     ports:
-      - 1337:80
+      - 80:80
     depends_on:
       - web
 
 volumes:
   postgres_data:
   static_volume:
- 
