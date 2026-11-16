@@ -25,7 +25,7 @@ def book_session (user, session_id, quantity):
     total = session.price * quantity
 
     if  wallet.balance < total:
-        raise ValueError("insufficient funds")
+        raise ValueError("insufficient funds, please go to the wallet tab and add funds")
 
     wallet.balance -= total
     wallet.save()
