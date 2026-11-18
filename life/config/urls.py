@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from accounts import views as account_views
 from events import views as event_views
 from dashboard import views as dashboard_views
@@ -24,24 +24,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path("accounts/signup/", account_views.signup, name = "signup"),
-    path("accounts/login/", auth_views.LoginView.as_view(), name = "login"), #for class based views .as_view is used
-    path("accounts/logout/",  auth_views.LogoutView.as_view(), name = "logout"),
-
-    path("", event_views.EventListView.as_view(), name="home"), 
-
-    path("accounts/wallet", account_views.WalletView.as_view(), name= "wallet"),
-    path("accounts/wallet/add/", account_views.AddMoneyView.as_view(), name="add_money"),
-    path("sessions/<int:pk>/book/", event_views.BooksessionsView.as_view(), name="book_session"),
-
-    path("bookings/", event_views.BookingListView.as_view(), name="bookings"),
-    path("tickets/", event_views.TicketListView.as_view(), name="tickets"),
-
-    path("dashboard/", dashboard_views.DashboardView.as_view(), name="dashboard"),
-    path("dashboard/events/creation/", dashboard_views.EventCreationView.as_view(), name = "event_creation"),
-    path("dashboard/events/<int:pk>/sessions/add/", dashboard_views.SessionCreateView.as_view(), name= "session_creation"),
-    path("dashboard/tickets/", dashboard_views.OrgsTicketView.as_view(), name="org_tickets"),
-    path("dashboard/tickets/<int:pk>/consume/", dashboard_views.TicketConsumeView.as_view(), name="ticket_consume"),
-    path("dashboard/analytics/", dashboard_views.AnalyticsView.as_view(), name="analytics"),
+    path("accounts/", include("accounts.urls")),
+    path("", include("events.urls")),
+    path("dashboard/", include("dashboard.urls"))
+    
 ]
