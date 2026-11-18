@@ -11,7 +11,7 @@ class Organization(models.Model):
 
 #wallet is used to store data about the users and their balance
 class Wallet(models.Model):
-    user = models.OneToOneField( settings.AUTH_USER_MODEL, on_delete= models.CASCADE , related_name="wallet" )
+    user = models.OneToOneField( settings.AUTH_USER_MODEL, on_delete= models.CASCADE , related_name="wallet")
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0) #decimal used as float is not precise
 
     #here class Meta is used to check that all wallet balances will be greater than 0, 
@@ -22,7 +22,9 @@ class Wallet(models.Model):
                 condition=models.Q(balance__gte= 0), name="wallet_balance_gte0"
             )           
         ]
-
+    def __str__(self):
+        return f"{self.user.username}'s wallet has balance {self.balance}"  
+    
 #wallet transaction is used to manage the transaction whether its credit or debit and the amount
 class WalletTransaction(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.PROTECT, related_name="transactions")
@@ -30,3 +32,6 @@ class WalletTransaction(models.Model):
     amount =models.DecimalField(max_digits=10, decimal_places=2, default=0)
     balance_after = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.wallet.user} has a transaction of type: {self.type}"

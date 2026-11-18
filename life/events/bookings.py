@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from accounts.models import WalletTransaction, Wallet
-from .models import Bookings, Session, Tickets
+from .models import Booking, Session, Ticket
 
 @transaction.atomic
 def book_session (user, session_id, quantity):
@@ -39,7 +39,7 @@ def book_session (user, session_id, quantity):
                                                 balance_after = wallet.balance,)
 
     #create the bookings
-    booking = Bookings.objects.create(user = user,
+    booking = Booking.objects.create(user = user,
                                       session = session,
                                       quantity = quantity,
                                       totalprice = total,
@@ -47,7 +47,7 @@ def book_session (user, session_id, quantity):
                                       )
     #generate the tickets using a loop for the amount of quantity of bookings purchased
     for _ in range(quantity):
-        Tickets.objects.create(booking=booking)
+        Ticket.objects.create(booking=booking)
 
     return booking
 
@@ -56,8 +56,8 @@ def book_session (user, session_id, quantity):
 @transaction.atomic
 def consume_ticket(organization, ticket_id):
     try:
-        ticket = Tickets.objects.select_for_update(of=("self",)).get(pk=ticket_id, booking__session__event__organization=organization)
-    except Tickets.DoesNotExist:
+        ticket = Ticket.objects.select_for_update(of=("self",)).get(pk=ticket_id, booking__session__event__organization=organization)
+    except Ticket.DoesNotExist:
         raise ValueError("That ticket does not exist.")
 
     if ticket.status != "ACTIVE":

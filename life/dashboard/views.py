@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, FormView, CreateView, ListView, V
 from .forms import EventCreationForm, SessionCreationForm
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
-from events.models import Event, Tickets, Bookings, Session
+from events.models import Event, Ticket, Booking, Session
 from events.bookings import consume_ticket
 from django.db.models import Sum, Aggregate
 # Create your views here.
@@ -58,7 +58,7 @@ class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
                 return self.request.user.groups.filter(name="Organization").exists()
         def get_queryset(self):
              #the __ is used to follow a relationship
-             return  Tickets.objects.filter(booking__session__event__organization = self.request.user.organization).order_by("-booking__created_at")
+             return  Ticket.objects.filter(booking__session__event__organization = self.request.user.organization).order_by("-booking__created_at")
              #ordering by negavtive booking date so that it comes in decending order
 
 class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -79,8 +79,8 @@ class AnalyticsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         organization = self.request.user.organization
-        tickets = Tickets.objects.filter(booking__session__event__organization = organization)
-        bookings = Bookings.objects.filter(session__event__organization = organization)
+        tickets = Ticket.objects.filter(booking__session__event__organization = organization)
+        bookings = Booking.objects.filter(session__event__organization = organization)
         context["ticketstotal"]=tickets.count()
         context["ticketsactive"] =tickets.filter(status="ACTIVE").count()
         context["ticketsconsumed"] =tickets.filter(status="CONSUMED").count()

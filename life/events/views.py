@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .models import Event, Bookings, Tickets
+from .models import Event, Booking, Ticket
 from .forms import BookingForm
 from .models import Event
 from .bookings import book_session
@@ -44,7 +44,7 @@ class BookingListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.groups.filter(name="Customer").exists()
     def get_queryset(self):
-        return Bookings.objects.filter(user=self.request.user).order_by("-created_at")
+        return Booking.objects.filter(user=self.request.user).order_by("-created_at")
 
 class TicketListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = "events/ticket_list.html"
@@ -54,5 +54,5 @@ class TicketListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.groups.filter(name="Customer").exists()
 
     def get_queryset(self):
-        return Tickets.objects.filter(
+        return Ticket.objects.filter(
             booking__user=self.request.user, status="ACTIVE").order_by("-booking__created_at")

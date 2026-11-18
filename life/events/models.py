@@ -13,6 +13,9 @@ class Event(models.Model):
     kind = models.CharField(max_length = 10, choices=kchoices)
     venue =models.CharField(max_length=50)
 
+    #__str__ is a special method which would return a human readable representation of an object
+    def __str__(self):
+        return self.title
 
 #a session is a book-able occerance of a certain event
 class Session(models.Model):
@@ -33,10 +36,12 @@ class Session(models.Model):
     def duration(self):
          return self.end_time - self.start_time
     def remaining(self):
-            return self.capacity - self.seats_booked
+            return self.capacity - self.seats_booked  
+    def __str__(self):
+         return f"this session is of the event {self.event.title} and it starts at {self.start_time}" 
 
 #bookings model is used to implement a system where users can purchase a certain session involing a wallet transaction
-class Bookings(models.Model):
+class Booking(models.Model):
      user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="bookings")#each user can have multiple bookings
      session = models.ForeignKey(Session, on_delete = models.PROTECT, related_name= "bookings" )
      quantity = models.IntegerField()
@@ -47,11 +52,15 @@ class Bookings(models.Model):
      #PROTECT is used over here to ensure that any session which has a booking can't be delete, 
 
      created_at = models.DateTimeField(auto_now_add=True) #auto_now_add will add the time the booking was made automatically
+     def __str__(self):
+        return f"{self.user} has booked a session of '{self.session.event.title}'"
 
 
 #the tickets model gives one unit which gives admission to an event
-class Tickets(models.Model):
+class Ticket(models.Model):
     status_choices = [("ACTIVE", "Active"),("CONSUMED", "Consumed"),] #done like this cause its stored as (value stored in db, value shown to user)
-    booking = models.ForeignKey(Bookings, on_delete=models.CASCADE, related_name="tickets")#CASCADE is used to ensure that when a booking is delted it's corresponding tickets would also be deleted
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name="tickets")#CASCADE is used to ensure that when a booking is delted it's corresponding tickets would also be deleted
     ticketcode = models.UUIDField(default =uuid.uuid4) #uuid will generate a random code for each ticket. uuid4 is completely random
     status = models.CharField(max_length=10, choices=status_choices, default="ACTIVE")
+    def __str__(self):
+            return f"{self.booking.user} has booked {self.booking.session.event.title}, the status of the ticket is {self.status}"
