@@ -10,7 +10,7 @@ def book_session (user, session_id, quantity):
         session = Session.objects.select_for_update().get(pk=session_id)
      #try to lock the session unless the session id is invalid in which case raise ValueError
     except:
-        ValueError("this session doesn't exist")
+        raise ValueError("this session doesn't exist")
 
     #to differentiate between ticketed and slot events, its so that ticketed events can only be bought one at a time
     if session.event.kind == "TICKET" and quantity != 1:
