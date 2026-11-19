@@ -9,7 +9,7 @@ class EventCreationForm(forms.ModelForm):
 class SessionCreationForm(forms.ModelForm):
     class Meta:
         model = Session
-        fields =["start_time", "end_time", "capacity", "price", ]
+        fields =["start_time", "end_time", "capacity", "price"]
         widgets ={
             #this makes it so there iss a widget which allows the organisers to choose the dat and time of starting via picker
             "start_time": forms.DateTimeInput(attrs={"type": "datetime-local"}), 

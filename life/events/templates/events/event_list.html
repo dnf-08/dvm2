@@ -20,10 +20,8 @@
       <td>
           <form method = "post" action = "{%url 'book_session' session.pk %}">
               {%csrf_token%}
-              <!--this format of button will make it so that the user can only book a quanitity of one if the the event is ticketed
-              and multiple if the event is of a slot kind-->
               {% if event.kind == "TICKET" %}
-              <input type="hidden" name="quantity" value="1">
+              <input type="number" name="quantity" value="1" min ="1">
               <button>Buy ticket</button>
               {% else %}
               <input type = 'number' name= "quantity" value="1" min="1">

@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from events.models import Event, Ticket, Booking, Session
 from events.bookings import consume_ticket
 from django.db.models import Sum, Aggregate
+from events.bookings import create_session
+
 # Create your views here.
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -48,8 +50,11 @@ class SessionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return context
         #context is a dictionary which will store data from this certain event model
     def form_valid(self, form):
-        form.instance.event = self.get_event()
-        return super().form_valid(form)
+        try:
+            create_session(self.get_event(), form)
+        except ValueError as e:
+            messages.error(self.request, str(e))
+        return HttpResponseRedirect(reverse("dashboard"))
 
 class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         template_name = "dashboard/org_ticket_list.html"

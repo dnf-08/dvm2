@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from accounts.models import WalletTransaction, Wallet
-from .models import Booking, Session, Ticket
+from .models import Booking, Session, Ticket, Event
 
 @transaction.atomic
 def book_session (user, session_id, quantity):
@@ -9,12 +9,8 @@ def book_session (user, session_id, quantity):
     try:
         session = Session.objects.select_for_update().get(pk=session_id)
      #try to lock the session unless the session id is invalid in which case raise ValueError
-    except:
+    except Session.DoesNotExist:
         raise ValueError("this session doesn't exist")
-
-    #to differentiate between ticketed and slot events, its so that ticketed events can only be bought one at a time
-    if session.event.kind == "TICKET" and quantity != 1:
-        raise ValueError("ticket events can only be bought one ticket at a time")
     
     if session.start_time <= timezone.now():
         raise ValueError("this session has already started")
@@ -65,3 +61,12 @@ def consume_ticket(organization, ticket_id):
     ticket.status = "CONSUMED"
     ticket.save()
     return ticket
+
+@transaction.atomic
+def create_session(event, form):
+
+    event = Event.objects.select_for_update().get(pk = event.pk)
+    if event.kind == 'TICKET' and event.sessions.exists():
+        raise ValueError("Ticketed events only occur once")
+    form.instance.event = event
+    return form.save()
