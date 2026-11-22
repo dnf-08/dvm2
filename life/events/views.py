@@ -16,7 +16,8 @@ class EventListView(LoginRequiredMixin, ListView):
     template_name = "events/event_list.html"
     #used to fetch and render all rows 
 
-class BooksessionsView(LoginRequiredMixin, UserPassesTestMixin, View):
+class BookSessionsView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """"""
     
     def test_func(self):
         return self.request.user.groups.filter(name="Customer").exists()
