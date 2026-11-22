@@ -3,8 +3,16 @@ from django.conf import settings
 import uuid
 # Create your models here.
 
-#event model is used to describe the details of an event
 class Event(models.Model):
+
+    """An event is something an organizer conducts.
+
+        A bookable occurance of an event is called a session.
+
+        This model defines the data stored which is relevant to each event that being the organizer's name,
+        it's title, description, kind(ticket or slot) and it's venue.    
+        """
+    
     #import the organization model from accounts as a foreign key for the event model
     organization = models.ForeignKey("accounts.Organization", on_delete=models.CASCADE, related_name = "events")
     title = models.CharField(max_length = 50)
@@ -17,8 +25,14 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
-#a session is a book-able occerance of a certain event
+
 class Session(models.Model):
+    """A bookable occurance of an event is called a session
+    
+        Each session has its own start time, end time, maximum capacity, price and number of seats already booked
+
+        ticket events can have only one session wheras slot events can have multiple.
+    """
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="sessions")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField() 
@@ -42,6 +56,11 @@ class Session(models.Model):
 
 #bookings model is used to implement a system where users can purchase a certain session involing a wallet transaction
 class Booking(models.Model):
+     """
+     Describes one purchase that a customer does for a certain sesssion. A single customer can have multiple bookings of the same session.
+
+     A booking is created using book_session from events/bookings.py
+     """
      user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="bookings")#each user can have multiple bookings
      session = models.ForeignKey(Session, on_delete = models.PROTECT, related_name= "bookings" )
      quantity = models.IntegerField()
@@ -58,6 +77,9 @@ class Booking(models.Model):
 
 #the tickets model gives one unit which gives admission to an event
 class Ticket(models.Model):
+    """
+    The ticket model decribes the unique entry passes a user has for a session oo an event.
+    """
     status_choices = [("ACTIVE", "Active"),("CONSUMED", "Consumed"),] #done like this cause its stored as (value stored in db, value shown to user)
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name="tickets")#CASCADE is used to ensure that when a booking is delted it's corresponding tickets would also be deleted
     ticketcode = models.UUIDField(default =uuid.uuid4) #uuid will generate a random code for each ticket. uuid4 is completely random
