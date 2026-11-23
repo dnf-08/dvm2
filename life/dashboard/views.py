@@ -17,7 +17,7 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """
     This view is for the home page for organizers where they can their own events in a list
 
-    Only users in the Organization group can access it
+    The user is first checked to be logged in and then checked if they are an Organization
 
     It is ordered by -pk, hence displaying the newest events first
     """
@@ -31,6 +31,8 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class EventCreationView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """
     Lets organizers create new events 
+
+    The user is first checked to be logged in and then checked if they are an Organization
 
     Instantiates EventCreationForm which takes in the fields of a new event
 
@@ -51,7 +53,7 @@ class SessionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     """
     Lets organizers create new sessions for their own events
 
-    The user is first checked to be logged in and then checked if they are an organizer.
+    The user is first checked to be logged in and then checked if they are an organization
 
     Events which are of kind TICKET can have only one session associated with them wheras SLOT can have multiple
 
@@ -87,6 +89,8 @@ class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         """
         Lets organizers view every ticket that was bought for one of their events.
 
+        The user is first checked to be logged in and then checked if they are an organization
+
         Tickets are listed by newest first
         """
         template_name = "dashboard/org_ticket_list.html"
@@ -101,6 +105,8 @@ class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
     """
     Lets organizers mark a particular ticket as consumed
+
+    The user is first checked to be logged in and then checked if they are an organization
 
     It accepts POST requests and a ticket can only be marked as consumed 
     if it belongs to that particular organisation's event
@@ -123,7 +129,7 @@ class AnalyticsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     """
     Lets organizers view analytics for all their events
 
-    Checks if the user is logged in and is an organizer
+    Checks if the user is logged in and is an organization
     """
     template_name = "dashboard/analytics.html"
     def test_func(self):
