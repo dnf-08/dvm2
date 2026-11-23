@@ -15,7 +15,11 @@ from events.bookings import create_session
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     """
+    This view is for the home page for organizers where they can their own events in a list
 
+    Only users in the Organization group can access it
+
+    It is ordered by -pk, hence displaying the newest events first
     """
     template_name = "dashboard/home.html"
     context_object_name = "events"
@@ -25,8 +29,16 @@ class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return Event.objects.filter(organization = self.request.user.organization).order_by("-pk")
 
 class EventCreationView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    """
+    Lets organizers create new events 
+
+    Instantiates EventCreationForm which takes in the fields of a new event
+
+    Redirects back to the dashboard home screen on success or failure
+    """
     form_class = EventCreationForm
     template_name = "dashboard/event_creation.html"
+    #reverse_lazy is used instead of reverse as this is a class attribute and will loaded by python before the urls exist
     success_url = reverse_lazy("dashboard")
     def test_func(self):
         return self.request.user.groups.filter(name="Organization").exists()
@@ -36,6 +48,18 @@ class EventCreationView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
 class SessionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    """
+    Lets organizers create new sessions for their own events
+
+    The user is first checked to be logged in and then checked if they are an organizer.
+
+    Events which are of kind TICKET can have only one session associated with them wheras SLOT can have multiple
+
+    Instantiates SessionCreationForm which takes in fields required for a new event and checks to make sure the end time of
+    an event is not before it's start time
+    
+    Redirects back to the dashboard home on success or failure
+    """
     form_class = SessionCreationForm
     template_name = "dashboard/session_creation.html"
     success_url = reverse_lazy("dashboard")
@@ -60,6 +84,11 @@ class SessionCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return HttpResponseRedirect(reverse("dashboard"))
 
 class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+        """
+        Lets organizers view every ticket that was bought for one of their events.
+
+        Tickets are listed by newest first
+        """
         template_name = "dashboard/org_ticket_list.html"
         context_object_name ="tickets"
         def test_func(self):
@@ -70,6 +99,16 @@ class OrgsTicketView(LoginRequiredMixin, UserPassesTestMixin, ListView):
              #ordering by negavtive booking date so that it comes in decending order
 
 class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """
+    Lets organizers mark a particular ticket as consumed
+
+    It accepts POST requests and a ticket can only be marked as consumed 
+    if it belongs to that particular organisation's event
+
+    This is enforced in consume_ticket from events/bookings.py, which this view calls
+
+    Redirects to the ticket list on success or failure
+    """
     def test_func(self):
         return self.request.user.groups.filter(name="Organization").exists()
 
@@ -81,10 +120,20 @@ class TicketConsumeView(LoginRequiredMixin, UserPassesTestMixin, View):
         return HttpResponseRedirect(reverse("org_tickets"))
 
 class AnalyticsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """
+    Lets organizers view analytics for all their events
+
+    Checks if the user is logged in and is an organizer
+    """
     template_name = "dashboard/analytics.html"
     def test_func(self):
          return self.request.user.groups.filter(name="Organization").exists()
     def get_context_data(self, **kwargs):
+        """
+        Adds the organizer's analytics to the context 
+        """
+        #super is used here to call a method of the parent class (that being TemplateView over here as 
+        #LoginRequiredMixin and UserPassTestMixin dont have this)
         context = super().get_context_data(**kwargs)
         organization = self.request.user.organization
         tickets = Ticket.objects.filter(booking__session__event__organization = organization)
