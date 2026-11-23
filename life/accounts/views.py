@@ -14,6 +14,11 @@ from .customer import createcustomer, creditwallet
 # Create your views here.
 
 def signup(request):
+    """
+    Allows customers to create new accounts.
+
+    The signn up page is validated with django's in built UserCreationForm, they are then added to the customer group   
+    """
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -26,6 +31,9 @@ def signup(request):
 
 #---------------wallet views------------------------------------
 class WalletView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """
+    This view is used to display the trasaction history of the user, ordered by their dates
+    """
     template_name = "accounts/wallet.html"
     context_object_name = "transactions"
     def test_func(self):
@@ -36,6 +44,9 @@ class WalletView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     #displays all the transactions in decending order of creation date
 
 class AddMoneyView(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    """
+    This view is used for the user to add money through their wallet (credit) using the AddMoneyForm 
+    """
     form_class = AddMoneyForm
     template_name = "accounts/add_money.html"
     success_url = reverse_lazy("wallet")

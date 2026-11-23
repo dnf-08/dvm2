@@ -14,6 +14,9 @@ from events.bookings import create_session
 # Create your views here.
 
 class DashboardView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """
+
+    """
     template_name = "dashboard/home.html"
     context_object_name = "events"
     def test_func(self):
